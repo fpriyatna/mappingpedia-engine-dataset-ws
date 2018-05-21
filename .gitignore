@@ -24,3 +24,6 @@ hs_err_pid*
 .idea
 target
 mappingpedia-engine-dataset-ws.iml
+
+src/main/resources/config.properties
+
