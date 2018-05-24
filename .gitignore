@@ -27,3 +27,4 @@ mappingpedia-engine-dataset-ws.iml
 
 src/main/resources/config.properties
 
+upload-dir/
