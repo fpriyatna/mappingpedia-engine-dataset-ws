@@ -13,7 +13,11 @@ import es.upm.fi.dia.oeg.mappingpedia.controller.DatasetController;
 import es.upm.fi.dia.oeg.mappingpedia.controller.DistributionController;
 import es.upm.fi.dia.oeg.mappingpedia.model.*;
 import es.upm.fi.dia.oeg.mappingpedia.model.result.*;
-import es.upm.fi.dia.oeg.mappingpedia.utility.*;
+//import es.upm.fi.dia.oeg.mappingpedia.utility.*;
+import es.upm.fi.dia.oeg.mappingpedia.utility.CKANUtility;
+import es.upm.fi.dia.oeg.mappingpedia.utility.MappingPediaUtility;
+import es.upm.fi.dia.oeg.mappingpedia.utility.MpcCkanUtility;
+import es.upm.fi.dia.oeg.mappingpedia.utility.MpcUtility;
 import org.apache.commons.io.FileUtils;
 //import org.apache.jena.ontology.OntModel;
 import org.springframework.http.HttpHeaders;
@@ -27,9 +31,8 @@ import org.slf4j.LoggerFactory;
 @RestController
 //@RequestMapping(value = "/mappingpedia")
 @MultipartConfig(fileSizeThreshold = 20971520)
-public class MappingPediaController {
-    //static Logger logger = LogManager.getLogger("MappingPediaController");
-    static Logger logger = LoggerFactory.getLogger("MappingPediaController");
+public class DatasetsWSController {
+    static Logger logger = LoggerFactory.getLogger(DatasetsWSController.class);
 
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
@@ -37,13 +40,15 @@ public class MappingPediaController {
 
     //private OntModel ontModel = MappingPediaEngine.ontologyModel();
 
+    /*
     private GitHubUtility githubClient = MappingPediaEngine.githubClient();
     private CKANUtility ckanClient = MappingPediaEngine.ckanClient();
     private JenaClient jenaClient = MappingPediaEngine.jenaClient();
     private VirtuosoClient virtuosoClient = MappingPediaEngine.virtuosoClient();
-
-    private DatasetController datasetController = new DatasetController(ckanClient, githubClient, virtuosoClient);
-    private DistributionController distributionController = new DistributionController(ckanClient, githubClient, virtuosoClient);
+*/
+    private DatasetController datasetController = DatasetController.apply();
+    private DistributionController distributionController = DistributionController.apply();
+    private MpcCkanUtility ckanClient = datasetController.ckanClient();
 
     @RequestMapping(value="/greeting", method= RequestMethod.GET)
     public GreetingJava getGreeting(@RequestParam(value="name", defaultValue="World") String name) {
@@ -139,14 +144,6 @@ public class MappingPediaController {
         return new GeneralResult(HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value());
     }
 
-    @RequestMapping(value="/ontology/resource_details", method= RequestMethod.GET)
-    public OntologyResource getOntologyResourceDetails(
-            @RequestParam(value="resource") String resource) {
-        logger.info("GET /ontology/resource_details ...");
-        String uri = MappingPediaUtility.getClassURI(resource);
-
-        return this.jenaClient.getDetails(uri);
-    }
 
     @RequestMapping(value="/github_repo_url", method= RequestMethod.GET)
     public String getGitHubRepoURL() {
@@ -275,19 +272,6 @@ public class MappingPediaController {
         return listResult;
     }
 
-    @RequestMapping(value="/properties", method= RequestMethod.GET)
-    public ListResult getProperties(
-            @RequestParam(value="class", required = false, defaultValue="Thing") String aClass
-            , @RequestParam(value="direct", required = false, defaultValue="true") String direct
-    )
-    {
-        logger.info("/properties ...");
-        logger.info("this.jenaClient = " + this.jenaClient);
-
-        ListResult listResult = this.jenaClient.getProperties(aClass, direct);
-
-        return listResult;
-    }
 
     @RequestMapping(value="/datasets", method= RequestMethod.GET)
     public ListResult getDatasets(
@@ -544,9 +528,12 @@ public class MappingPediaController {
             }
 
             boolean storeToCKAN = MappingPediaUtility.stringToBoolean(pStoreToCKAN);
-            return this.datasetController.add(dataset, manifestFileRef
+            File manifestFile = MpcUtility.multipartFileToFile(manifestFileRef, dataset.dctIdentifier());
+
+            return this.datasetController.add(dataset, manifestFile
                     , generateManifestFile, storeToCKAN);
         } catch(Exception e) {
+            e.printStackTrace();
             return new AddDatasetResult(HttpURLConnection.HTTP_INTERNAL_ERROR, e.getMessage()
                     , null
                     , null, null
@@ -608,7 +595,7 @@ public class MappingPediaController {
         distribution.dcatDownloadURL_$eq(distributionDownloadURL);
         distribution.dcatMediaType_$eq(distributionMediaType);
         if(distributionFileRef != null) {
-            distribution.distributionFile_$eq(MappingPediaUtility.multipartFileToFile(
+            distribution.distributionFile_$eq(MpcUtility.multipartFileToFile(
                     distributionFileRef , dataset.dctIdentifier()));
         }
         dataset.addDistribution(distribution);
@@ -619,7 +606,9 @@ public class MappingPediaController {
             storeToCKAN = false;
         }
 
-        return this.distributionController.addDistribution(distribution, manifestFileRef
+        File manifestFile = MpcUtility.multipartFileToFile(manifestFileRef, dataset.dctIdentifier());
+
+        return this.distributionController.addDistribution(distribution, manifestFile
                 , generateManifestFile, storeToCKAN);
     }
 
@@ -665,7 +654,7 @@ public class MappingPediaController {
             distribution.setAccessURL(distributionAccessURL, distributionDownloadURL);
             distribution.dcatMediaType_$eq(distributionMediaType);
             if(distributionMultipartFile != null) {
-                distribution.distributionFile_$eq(MappingPediaUtility.multipartFileToFile(
+                distribution.distributionFile_$eq(MpcUtility.multipartFileToFile(
                         distributionMultipartFile , dataset.dctIdentifier()));
             }
             distribution.encoding_$eq(distributionEncoding);
@@ -680,7 +669,8 @@ public class MappingPediaController {
                 storeToCKAN = false;
             }
 
-            return this.distributionController.addDistribution(distribution, manifestFileRef
+            File manifestFile = MpcUtility.multipartFileToFile(manifestFileRef, dataset.dctIdentifier());
+            return this.distributionController.addDistribution(distribution, manifestFile
                     , generateManifestFile, storeToCKAN);
 
         } catch (Exception e) {
@@ -734,7 +724,7 @@ public class MappingPediaController {
         distribution.setAccessURL(distributionAccessURL, distributionDownloadURL);
         distribution.dcatMediaType_$eq(distributionMediaType);
         if(distributionMultipartFile != null) {
-            distribution.distributionFile_$eq(MappingPediaUtility.multipartFileToFile(
+            distribution.distributionFile_$eq(MpcUtility.multipartFileToFile(
                     distributionMultipartFile , dataset.dctIdentifier()));
         }
         distribution.encoding_$eq(distributionEncoding);
@@ -749,7 +739,8 @@ public class MappingPediaController {
             storeToCKAN = false;
         }
 
-        return this.distributionController.addDistribution(distribution, manifestFileRef
+        File manifestFile = MpcUtility.multipartFileToFile(manifestFileRef, dataset.dctIdentifier());
+        return this.distributionController.addDistribution(distribution, manifestFile
                 , generateManifestFile, storeToCKAN);
     }
 
@@ -793,14 +784,6 @@ public class MappingPediaController {
         logger.info("aClass = " + aClass);
         ListResult result = MappingPediaEngine.getSubclassesSummary(aClass) ;
         //logger.info("result = " + result);
-        return result;
-    }
-
-    @RequestMapping(value="/ogd/utility/superclassesSummary", method= RequestMethod.GET)
-    public ListResult getSuperclassesSummary(@RequestParam(value="aClass") String aClass) {
-        logger.info("GET /ogd/utility/superclassesSummary ...");
-        logger.info("aClass = " + aClass);
-        ListResult result = jenaClient.getSuperclasses(aClass);
         return result;
     }
 
