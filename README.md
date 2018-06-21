@@ -1,2 +1,2 @@
-# mappingpedia-ws
-Web service controller of mappingpedia-engine
+# mappingpedia-engine-datasets-ws
+Web service controller of mappingpedia-engine-datasets
