@@ -63,6 +63,6 @@ public class Application {
 		multipartProperties.setLocation("./mpe-datasets-temp");
 		String multiPartPropertiesLocation = multipartProperties.getLocation();
 		logger.info("multiPartPropertiesLocation = " + multiPartPropertiesLocation);
-		logger.info("Mappingpedia Engine Dataset WS started.\n\n\n");
+		logger.info("Mappingpedia Engine Datasets WS started.\n\n\n");
 	}
 }

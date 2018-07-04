@@ -291,7 +291,7 @@ public class DatasetsWSController {
         } else {
             listResult = this.datasetController.findAll();
         }
-        logger.info("datasets result = " + listResult);
+        //logger.info("datasets result = " + listResult);
 
         return listResult;
     }
