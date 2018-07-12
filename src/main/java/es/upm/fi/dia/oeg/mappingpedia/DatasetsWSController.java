@@ -14,9 +14,8 @@ import es.upm.fi.dia.oeg.mappingpedia.controller.DistributionController;
 import es.upm.fi.dia.oeg.mappingpedia.model.*;
 import es.upm.fi.dia.oeg.mappingpedia.model.result.*;
 //import es.upm.fi.dia.oeg.mappingpedia.utility.*;
-import es.upm.fi.dia.oeg.mappingpedia.utility.CKANUtility;
-import es.upm.fi.dia.oeg.mappingpedia.utility.MappingPediaUtility;
 import es.upm.fi.dia.oeg.mappingpedia.utility.MpcCkanUtility;
+import es.upm.fi.dia.oeg.mappingpedia.utility.MappingPediaUtility;
 import es.upm.fi.dia.oeg.mappingpedia.utility.MpcUtility;
 import org.apache.commons.io.FileUtils;
 //import org.apache.jena.ontology.OntModel;
@@ -157,7 +156,7 @@ public class DatasetsWSController {
             catalogUrl = MappingPediaEngine.mappingpediaProperties().ckanURL();
         }
         logger.info("GET /ckanDatasetList ...");
-        return CKANUtility.getDatasetList(catalogUrl);
+        return MpcCkanUtility.getDatasetList(catalogUrl);
     }
 
     @RequestMapping(value="/virtuoso_enabled", method= RequestMethod.GET)
@@ -234,7 +233,7 @@ public class DatasetsWSController {
         String ckanURL = MappingPediaEngine.mappingpediaProperties().ckanURL();
         String ckanKey = MappingPediaEngine.mappingpediaProperties().ckanKey();
 
-        CKANUtility ckanClient = new CKANUtility(ckanURL, ckanKey);
+        MpcCkanUtility ckanClient = new MpcCkanUtility(ckanURL, ckanKey);
         File file = new File(filePath);
         try {
             if(!file.exists()) {
@@ -259,7 +258,7 @@ public class DatasetsWSController {
         String ckanURL = MappingPediaEngine.mappingpediaProperties().ckanURL();
         String ckanKey = MappingPediaEngine.mappingpediaProperties().ckanKey();
 
-        CKANUtility ckanClient = new CKANUtility(ckanURL, ckanKey);
+        MpcCkanUtility ckanClient = new MpcCkanUtility(ckanURL, ckanKey);
         return ckanClient.updateDatasetLanguage(organizationId, datasetLanguage);
     }
 

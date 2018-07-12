@@ -11,7 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.MultipartProperties;
 
-import es.upm.fi.dia.oeg.mappingpedia.utility.CKANUtility;
+import es.upm.fi.dia.oeg.mappingpedia.utility.MpcCkanUtility;
 import es.upm.fi.dia.oeg.mappingpedia.utility.GitHubUtility;
 import es.upm.fi.dia.oeg.mappingpedia.utility.JenaClient;
 import es.upm.fi.dia.oeg.mappingpedia.utility.VirtuosoClient;
