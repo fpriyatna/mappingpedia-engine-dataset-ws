@@ -29,3 +29,6 @@ src/main/resources/config.properties
 
 upload-dir/
 *.iml
+.classpath
+.project
+.settings/

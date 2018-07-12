@@ -11,7 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.MultipartProperties;
 
-import es.upm.fi.dia.oeg.mappingpedia.utility.CKANUtility;
+import es.upm.fi.dia.oeg.mappingpedia.utility.MpcCkanUtility;
 import es.upm.fi.dia.oeg.mappingpedia.utility.GitHubUtility;
 import es.upm.fi.dia.oeg.mappingpedia.utility.JenaClient;
 import es.upm.fi.dia.oeg.mappingpedia.utility.VirtuosoClient;
@@ -63,6 +63,6 @@ public class Application {
 		multipartProperties.setLocation("./mpe-datasets-temp");
 		String multiPartPropertiesLocation = multipartProperties.getLocation();
 		logger.info("multiPartPropertiesLocation = " + multiPartPropertiesLocation);
-		logger.info("Mappingpedia Engine Dataset WS started.\n\n\n");
+		logger.info("Mappingpedia Engine Datasets WS started.\n\n\n");
 	}
 }
