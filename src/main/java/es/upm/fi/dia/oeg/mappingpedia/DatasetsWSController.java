@@ -295,6 +295,18 @@ public class DatasetsWSController {
         return listResult;
     }
 
+    @RequestMapping(value="/dataset", method= RequestMethod.GET)
+    public ListResult getDataset(
+            @RequestParam(value="dataset_id", required = false) String datasetId
+    ) {
+        logger.info("/dataset ...");
+        logger.info("dataset_id = " + datasetId);
+
+        ListResult listResult = this.datasetController.findById(datasetId);
+
+        return listResult;
+    }
+
     @RequestMapping(value="/distributions", method= RequestMethod.GET)
     public ListResult getDistributions(
             @RequestParam(value="ckan_resource_id", required = false) String ckanResourceId
