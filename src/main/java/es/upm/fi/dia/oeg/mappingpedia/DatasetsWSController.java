@@ -481,6 +481,8 @@ public class DatasetsWSController {
             , @RequestParam(value="generateManifestFile", required = false, defaultValue="true") String pGenerateManifestFile
             , @RequestParam(value="ckan_package_id", required = false) String ckanPackageId
             , @RequestParam(value="store_to_ckan", required = false, defaultValue = "true") String pStoreToCKAN
+            , @RequestParam(value="ckan_organization_id", required = false) String ckanOrganizationId
+            , @RequestParam(value="ckan_organization_name", required = false) String ckanOrganizationName
     )
     {
         logger.info("[POST] /datasets/{organization_id}");
@@ -517,6 +519,8 @@ public class DatasetsWSController {
             dataset.dctAccessRight_$eq(accessRight);
             dataset.dctProvenance_$eq(provenance);
             dataset.ckanPackageLicense_$eq(datasetLicense);
+            dataset.ckanOrganizationId_$eq(ckanOrganizationId);
+            dataset.ckanOrganizationName_$eq(ckanOrganizationName);
 
             dataset.provWasAttributedTo_$eq(provWasAttributedTo);
             dataset.provWasGeneratedBy_$eq(provWasGeneratedBy);
