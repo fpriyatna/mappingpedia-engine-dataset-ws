@@ -35,12 +35,13 @@
             <AppenderRef ref="App-File-Appender"/>
             <AppenderRef ref="Console-Appender"/>
         </Logger>
-        <Logger name="es.upm.fi.dia.oeg.mappingpedia.Application" level="error" additivity="false">
+        <Logger name="Application" level="info" additivity="false">
             <AppenderRef ref="SpringBoot-File-Appender"/>
             <AppenderRef ref="Console-Appender"/>
         </Logger>
         <Root>
             <AppenderRef ref="Console-Appender"/>
+			<AppenderRef ref="App-File-Appender"/>
         </Root>
     </Loggers>
 </Configuration>
