@@ -309,13 +309,24 @@ public class DatasetsWSController {
 
     @RequestMapping(value="/distributions", method= RequestMethod.GET)
     public ListResult getDistributions(
-            @RequestParam(value="ckan_resource_id", required = false) String ckanResourceId
+            @RequestParam(value="dataset_id", required = false) String datasetId
+            , @RequestParam(value="ckan_resource_id", required = false) String ckanResourceId
     ) {
         logger.info("/distributions ...");
+        logger.info("dataset_id = " + datasetId);
         logger.info("ckan_resource_id = " + ckanResourceId);
 
-        ListResult listResult = this.distributionController.findByCKANResourceId(
-                ckanResourceId);
+        ListResult listResult;
+        if(datasetId != null) {
+            listResult = this.distributionController.findDistributionsByDatasetId(
+                    datasetId);
+        } else if(ckanResourceId != null) {
+            listResult = this.distributionController.findByCKANResourceId(
+                    ckanResourceId);
+        } else {
+            listResult = this.distributionController.findAllDistributions();
+        }
+
 
         logger.info("/distributions listResult = " + listResult);
 
